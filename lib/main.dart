@@ -9,9 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Global_Variables.dart' as globals;
 
-//Added to git
-//Git second change
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
