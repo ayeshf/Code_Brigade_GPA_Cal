@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Global_Variables.dart' as globals;
 
+//Added to git
+
+
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
