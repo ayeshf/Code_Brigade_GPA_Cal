@@ -14,7 +14,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   //globals.Global_Current_User = 54;
-  globals.Global_Current_User_Type = 0;
+  //globals.Global_Current_User_Type = 0;
   runApp(MyApp());
 }
 
