@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Global_Variables.dart' as globals;
-import 'package:test1/Student_Results.dart';
+import 'package:test1/Add_New_Courses.dart';
 
 class Admin_Main_Menu extends StatefulWidget {
   @override
@@ -26,17 +26,6 @@ class Admin_Main_Menu_State extends State<Admin_Main_Menu> {
 
   final firestoreInstance = FirebaseFirestore.instance;
 
-  /*void Admin_Page_init(){
-    firestoreInstance.collection("tbladmins").where('admin_email',isEqualTo:globals.Global_Current_User).get().then((queried_data) {
-      queried_data.docs.forEach((queried_data_i) {
-        //print(queried_result["student_id"]);
-        setState(() {
-          print(queried_data_i["admin_email"]);
-          globals.Global_Current_User_Name = queried_data_i["admin_fname"];
-        });
-      });
-    });
-  }*/
 
   void Admin_Page_init(){
     firestoreInstance.collection("tbladmins").where('admin_email',isEqualTo:globals.Global_Current_User).get().then((queried_data) {
@@ -185,7 +174,11 @@ class Admin_Main_Menu_State extends State<Admin_Main_Menu> {
                       minWidth: 2000.00,
                       child: RaisedButton(
                         onPressed: () {
-
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Add_New_Courses()),
+                          );
                         },
 
                         color: Colors.yellowAccent[400],
