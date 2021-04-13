@@ -26,11 +26,9 @@ class HomePageState extends State<HomePage> {
 
   final firestoreInstance = FirebaseFirestore.instance;
   void Button1function(){
-    //print("Button 1 PressedA");
     print("Current user is " + globals.Global_Current_User);
     firestoreInstance.collection("tblstudents").where('student_email',isEqualTo:globals.Global_Current_User).get().then((queried_snapshot) {
       queried_snapshot.docs.forEach((queried_result) {
-        //print(queried_result["student_id"]);
         setState((){
           print(queried_result);
           print(queried_result["student_email"]);
@@ -62,103 +60,115 @@ class HomePageState extends State<HomePage> {
       first_time = 0;
 
     }
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.yellowAccent[400],
-        title: Text(
-          'Welcome  ' + globals.Global_Current_User_Name,
-          style: TextStyle(color: Colors.blueAccent),
-        ),
-      ),
-      body: Container(
-        margin: EdgeInsets.all(50),
-        child: Column(
-            children: [
-              ExpansionTile(
-                  title: Text('Student Details'),
-                  initiallyExpanded: true,
+    if (globals.Global_Current_User_Name != null) {
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.yellowAccent[400],
+            title: Text(
+              'Welcome  ' + globals.Global_Current_User_Name,
+              style: TextStyle(color: Colors.blueAccent),
+            ),
+          ),
+          body: Container(
+              margin: EdgeInsets.all(50),
+              child: Column(
                   children: [
-                    ListTile(
-                      //leading: Text('Leading '),
-                      title: Text('Student ID'),
-                      subtitle: Text(current_student_id.toString()),
-                      //dense: true,
-                      //selected: true,
+                    ExpansionTile(
+                      title: Text('Student Details'),
+                      initiallyExpanded: true,
+                      children: [
+                        ListTile(
+                          //leading: Text('Leading '),
+                          title: Text('Student ID'),
+                          subtitle: Text(current_student_id.toString()),
+                          //dense: true,
+                          //selected: true,
+                        ),
+                        ListTile(
+                          //leading: Text('Leading '),
+                          title: Text('Student Email'),
+                          subtitle: Text(current_student_email.toString()),
+
+                          //dense: true,
+                          //selected: true,
+                        ),
+                        ListTile(
+                          //leading: Text('Leading '),
+                          title: Text('Student Name'),
+                          subtitle: Text(
+                              current_student_fname.toString() + " " +
+                                  current_student_lname.toString()),
+                          //dense: true,
+                          //selected: true,
+                        ),
+                        ListTile(
+                          //leading: Text('Leading '),
+                          title: Text('Mobile Phone'),
+                          subtitle: Text(current_student_mobile.toString()),
+                          //dense: true,
+                          //selected: true,
+                        ),
+                        ListTile(
+                          //leading: Text('Leading '),
+                          title: Text('Gender'),
+                          subtitle: Text(current_student_gender.toString()),
+                          //dense: true,
+                          //selected: true,
+                        ),
+
+
+                      ],
+
                     ),
-                    ListTile(
-                      //leading: Text('Leading '),
-                      title: Text('Student Email'),
-                      subtitle: Text(current_student_email.toString()),
-
-                      //dense: true,
-                      //selected: true,
+                    RaisedButton(
+                        color: Colors.yellowAccent[400],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),),
+                        child: Text("View Results"),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Student_Results()),
+                          );
+                        }
                     ),
-                    ListTile(
-                      //leading: Text('Leading '),
-                      title: Text('Student Name'),
-                      subtitle: Text(current_student_fname.toString() + " " + current_student_lname.toString()),
-                      //dense: true,
-                      //selected: true,
+                    RaisedButton(
+                        color: Colors.yellowAccent[400],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),),
+                        child: Text("Ask Question"),
+
+                        onPressed: () {
+                          Button1function();
+                        }
                     ),
-                    ListTile(
-                      //leading: Text('Leading '),
-                      title: Text('Mobile Phone'),
-                      subtitle: Text(current_student_mobile.toString()),
-                      //dense: true,
-                      //selected: true,
-                    ),
-                    ListTile(
-                      //leading: Text('Leading '),
-                      title: Text('Gender'),
-                      subtitle: Text(current_student_gender.toString()),
-                      //dense: true,
-                      //selected: true,
+                    RaisedButton(
+                        color: Colors.yellowAccent[400],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(9.0),),
+                        child: Text("Sign out"),
+                        onPressed: () {
+                          globals.Global_Current_User_Type = 0;
+                          globals.Global_Current_User_Name = null;
+                          context.read<FBase_User_Login_Service>().signOut();
+                        }
                     ),
 
 
+                  ]
+              )
+          )
 
-                  ],
-
-              ),
-              RaisedButton(
-                  color: Colors.yellowAccent[400],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9.0),),
-                  child: Text("View Results"),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Student_Results()),
-                    );
-                  }
-              ),
-              RaisedButton(
-                  color: Colors.yellowAccent[400],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9.0),),
-                  child: Text("Ask Question"),
-
-                  onPressed: () {
-                    Button1function();
-                  }
-              ),
-              RaisedButton(
-                color: Colors.yellowAccent[400],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9.0),),
-                  child: Text("Sign out"),
-                  onPressed: () {
-                    globals.Global_Current_User_Type = 0;
-                    context.read<FBase_User_Login_Service>().signOut();
-                  }
-              ),
-
-
-
-
-
-
-            ]
-        )
-      )
-
-    );
+      );
+    }else{
+      return Scaffold(
+        body: Center(
+          child:CircularProgressIndicator(
+              backgroundColor: Colors.grey,
+          ),
+        ),
+      );
+    }
   }
 }

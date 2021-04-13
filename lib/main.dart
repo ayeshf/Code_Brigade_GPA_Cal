@@ -101,7 +101,7 @@ class Auth_Process_State extends State<Auth_Process> {
         if(snapshot.hasData){
           print("Inside snapshot:has data");
           if (firebaseUser != null) {
-            print("HomePage_Option");
+            print("Login_Option");
             print(firebaseUser.email);
             globals.Global_Current_User = firebaseUser.email;
 
@@ -110,7 +110,7 @@ class Auth_Process_State extends State<Auth_Process> {
               print("Loading User Home Page  : " + globals.Global_Current_User_Type.toString());
               return HomePage();
             }
-            if (globals.Global_Current_User_Type == 2){
+            else if (globals.Global_Current_User_Type == 2){
               print("Loading User Home Page  : " + globals.Global_Current_User_Type.toString());
               return Admin_Main_Menu();
             }
