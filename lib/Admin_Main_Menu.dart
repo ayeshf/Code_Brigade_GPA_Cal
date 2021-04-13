@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Global_Variables.dart' as globals;
 import 'package:test1/Add_New_Courses.dart';
+import 'package:test1/Edit_Delete_Courses.dart';
 
 class Admin_Main_Menu extends StatefulWidget {
   @override
@@ -194,7 +195,11 @@ class Admin_Main_Menu_State extends State<Admin_Main_Menu> {
                       minWidth: 2000.00,
                       child: RaisedButton(
                         onPressed: () {
-
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Edit_Delete_Courses()),
+                          );
                         },
 
                         color: Colors.yellowAccent[400],

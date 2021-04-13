@@ -36,12 +36,6 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
        });
      }
 
-
-
-    /*return await firestore_courses_collection.doc().set({
-      'course_id' : course_id,
-      'no_of_semesters' : no_of_semester,
-    });*/
   }
 
   @override
