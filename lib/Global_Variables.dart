@@ -6,3 +6,4 @@ var Global_Current_User_Name;
 var Global_Current_User_ID;
 var Global_Current_Course_ID;
 var Global_Current_Semester_Count;
+bool Global_Login_Fail;

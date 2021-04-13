@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Test',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -59,9 +59,7 @@ class Auth_Process_State extends State<Auth_Process> {
 
   Future <bool>  Verify_Login_Type(User firebaseUser)  async{
     await firestoreInstance.collection("tblstudents").where('student_email', isEqualTo: firebaseUser.email.toString()).get().then((queried_student) {
-      print("inside future");
       queried_student.docs.forEach((queried_student_i) {
-        print("inside future 2");
         //print("Student query success");
         globals.Global_Current_User = firebaseUser.email;
         globals.Global_Current_User_Type = 1;
@@ -69,9 +67,7 @@ class Auth_Process_State extends State<Auth_Process> {
       });
     });
     await firestoreInstance.collection("tbladmins").where('admin_email', isEqualTo: firebaseUser.email.toString()).get().then((queried_admin) {
-      print("inside future");
       queried_admin.docs.forEach((queried_admin_i) {
-        print("inside future 2");
         //print("Student query success");
         globals.Global_Current_User = firebaseUser.email;
         globals.Global_Current_User_Type = 2;
@@ -79,7 +75,6 @@ class Auth_Process_State extends State<Auth_Process> {
       });
     });
 
-    print("Ending testt");
     return Future.value(true);
     //return true;
   }
@@ -116,10 +111,10 @@ class Auth_Process_State extends State<Auth_Process> {
             }
 
           }
-          return SignInPage();
+          return Login_Page();
         }else{
           print("Inside snapshot:No data");
-          return SignInPage();
+          return Login_Page();
         }
 
 
@@ -127,7 +122,7 @@ class Auth_Process_State extends State<Auth_Process> {
 
       }
     );
-    return SignInPage();
+    return Login_Page();
 
   }
 

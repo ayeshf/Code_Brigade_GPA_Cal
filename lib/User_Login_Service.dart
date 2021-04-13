@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'Global_Variables.dart' as globals;
 
 class FBase_User_Login_Service {
   final FirebaseAuth _firebaseAuth;
@@ -22,9 +23,12 @@ class FBase_User_Login_Service {
   Future<String> signIn({String email, String password}) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
+      print("Sign_In_Success");
       return "Signed in";
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      print("Sign_In_Failed");
+      globals.Global_Login_Fail = true;
+      return Future.value("sdfsdf");
     }
   }
 
