@@ -18,6 +18,8 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   bool course_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
   String Current_No_of_Semesters;
+  bool Search_Successful = false;
+  String Current_Document_ID;
 
   Search_Button(){
     Future.wait([
@@ -51,11 +53,10 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
     ]).then((List <dynamic> future_value){
       if (course_exist == true){
         course_exist = false;
-        FirebaseFirestore.instance.collection("tblcourses").where('course_id', isEqualTo: Course_ID.text).get().then((queried_data){
-          queried_data.docs.forEach((queried_data_i) {
-            FirebaseFirestore.instance.collection("tblcourses").doc(queried_data_i.id).delete().then((delete_data){
+            FirebaseFirestore.instance.collection("tblcourses").doc(Current_Document_ID).delete().then((delete_data){
               return showDialog(context: context, builder: (context){
                 Number_of_semesters.text = "";
+                Course_ID.text = "";
                 return AlertDialog(
                   title: Text("Record Deleted"),
                   actions: [
@@ -68,14 +69,64 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                   ],
                 );
               });
-            }
+            });
 
-            );
-          });
-        });
 
 
       }else {
+        return showDialog(context: context, builder: (context){
+          Number_of_semesters.text = "";
+          return AlertDialog(
+            title: Text("Unable to find such course"),
+            actions: [
+              RaisedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        });
+      }
+    });
+  }
+
+  Update_Button(){
+    Future.wait([
+      Search_New_Course(Course_ID.text),
+    ]).then((List <dynamic> future_value){
+      if (course_exist == true){
+        course_exist = false;
+        FirebaseFirestore.instance.collection('tblcourses').doc(Current_Document_ID).update(
+            {
+              "no_of_semesters" : Number_of_semesters.text
+            }).then((values){
+          Current_Document_ID = null;
+          return showDialog(context: context, builder: (context){
+            Number_of_semesters.text = "";
+            Course_ID.text = "";
+            return AlertDialog(
+              title: Text("Record Updated"),
+              actions: [
+                RaisedButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Ok"),
+                )
+              ],
+            );
+          });
+
+        }
+        );
+
+        //Number_of_semesters.text = Current_No_of_Semesters;
+
+
+
+      }else{
         return showDialog(context: context, builder: (context){
           Number_of_semesters.text = "";
           return AlertDialog(
@@ -98,9 +149,12 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   Future <void> Search_New_Course(String course_id) async{
 
     await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
+      course_exist = false;
+      Current_Document_ID = null;
       filtered_courses.docs.forEach((filtered_courses_i) {
         Current_No_of_Semesters = filtered_courses_i["no_of_semesters"];
         course_exist = true;
+        Current_Document_ID = filtered_courses_i.id;
         return;
       });
     });
@@ -109,6 +163,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.yellowAccent[400],
           title: Text(
@@ -144,7 +199,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
 
                 TextFormField(
                   controller: Number_of_semesters,
-                  enabled: false,
+                  //enabled: false,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                       labelText: "Number of semesters",
@@ -158,6 +213,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                   height: 40.0,
                   minWidth: 2000.00,
                   child: RaisedButton(
+                    child: Text("Search"),
                     color: Colors.yellowAccent[400],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(9.0),
@@ -169,9 +225,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                         print("Validation error");
                       }
                     },
-                    child: Text("Search"),
                   ),
-
                 ),
 
                 SizedBox(height: 10),
@@ -180,6 +234,28 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                   height: 40.0,
                   minWidth: 2000.00,
                   child: RaisedButton(
+                    child: Text("Update"),
+                    color: Colors.yellowAccent[400],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(9.0),
+                    ),
+                    onPressed: () {
+                      if (_Form_Validation_Key.currentState.validate()){
+                        Update_Button();
+                      }else{
+                        print("Validation error");
+                      }
+                    },
+                  ),
+                ),
+
+                SizedBox(height: 10),
+
+                ButtonTheme(
+                  height: 40.0,
+                  minWidth: 2000.00,
+                  child: RaisedButton(
+                    child: Text("Delete Record"),
                     color: Colors.yellowAccent[400],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(9.0),
@@ -191,7 +267,6 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                         print("Validation error");
                       }
                     },
-                    child: Text("Delete Record"),
                   ),
 
                 )

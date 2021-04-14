@@ -30,6 +30,8 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
      });
 
      if (course_exist == false){
+       Course_ID.text = "";
+       Number_of_semesters.text = "";
        return await firestore_courses_collection.doc().set({
         'course_id' : course_id,
         'no_of_semesters' : no_of_semester,
