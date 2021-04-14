@@ -15,8 +15,10 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   final CollectionReference firestore_courses_collection = FirebaseFirestore.instance.collection('tblcourses');
   TextEditingController Course_ID = TextEditingController();
   TextEditingController Number_of_semesters = TextEditingController();
+  TextEditingController total_no_of_credits = TextEditingController();
   final _Form_Validation_Key = GlobalKey<FormState>();
   String Current_No_of_Semesters;
+  String Current_no_of_Credits;
   bool Search_Successful = false;
   String Current_Document_ID;
 
@@ -26,6 +28,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
     ]).then((List <dynamic> future_value){
       if (Current_Document_ID != null){
         Number_of_semesters.text = Current_No_of_Semesters;
+        total_no_of_credits.text = Current_no_of_Credits;
       }else{
         return showDialog(context: context, builder: (context){
           Number_of_semesters.text = "";
@@ -55,6 +58,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
               return showDialog(context: context, builder: (context){
                 Number_of_semesters.text = "";
                 Course_ID.text = "";
+                total_no_of_credits.text = "";
                 return AlertDialog(
                   title: Text("Record Deleted"),
                   actions: [
@@ -74,6 +78,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
       }else {
         return showDialog(context: context, builder: (context){
           Number_of_semesters.text = "";
+          total_no_of_credits.text = "";
           return AlertDialog(
             title: Text("Unable to find such course"),
             actions: [
@@ -97,11 +102,13 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
       if (Current_Document_ID != null){
         FirebaseFirestore.instance.collection('tblcourses').doc(Current_Document_ID).update(
             {
-              "no_of_semesters" : Number_of_semesters.text
+              "no_of_semesters" : Number_of_semesters.text,
+              "total_credits" : total_no_of_credits.text,
             }).then((values){
           Current_Document_ID = null;
           return showDialog(context: context, builder: (context){
             Number_of_semesters.text = "";
+            total_no_of_credits.text = "";
             Course_ID.text = "";
             return AlertDialog(
               title: Text("Record Updated"),
@@ -146,6 +153,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
       Current_Document_ID = null;
       filtered_courses.docs.forEach((filtered_courses_i) {
         Current_No_of_Semesters = filtered_courses_i["no_of_semesters"];
+        Current_no_of_Credits = filtered_courses_i["total_credits"];
         Current_Document_ID = filtered_courses_i.id;
         return;
       });
@@ -195,6 +203,18 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                       labelText: "Number of semesters",
+                      fillColor: Colors.amber[400], filled: true
+                  ),
+                ),
+
+                SizedBox(height: 10),
+
+                TextFormField(
+                  controller: total_no_of_credits,
+                  //enabled: false,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  decoration: InputDecoration(
+                      labelText: "Number of credits",
                       fillColor: Colors.amber[400], filled: true
                   ),
                 ),

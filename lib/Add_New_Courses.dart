@@ -15,11 +15,13 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
   final CollectionReference firestore_courses_collection = FirebaseFirestore.instance.collection('tblcourses');
   TextEditingController Course_ID = TextEditingController();
   TextEditingController Number_of_semesters = TextEditingController();
+  TextEditingController total_no_of_credits = TextEditingController();
+
   bool course_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
 
 
-  Future <void> Add_New_Course(String course_id, String no_of_semester) async{
+  Future <void> Add_New_Course(String course_id, String no_of_semester, String no_of_credits) async{
 
      await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
        course_exist = false;
@@ -33,9 +35,11 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
      if (course_exist == false){
        Course_ID.text = "";
        Number_of_semesters.text = "";
+       total_no_of_credits.text = "";
        return await firestore_courses_collection.doc().set({
         'course_id' : course_id,
         'no_of_semesters' : no_of_semester,
+        'total_credits' : no_of_credits,
        });
      }
 
@@ -96,6 +100,23 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
 
               SizedBox(height: 10),
 
+              TextFormField(
+                validator: (validator_input) {
+                  if(validator_input == null || validator_input.isEmpty){
+                    return 'This field is mandatory';
+                  }
+                  return null;
+                },
+                controller: total_no_of_credits,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                decoration: InputDecoration(
+                    labelText: "Number of credits",
+                    fillColor: Colors.amber[400], filled: true
+                ),
+              ),
+
+              SizedBox(height: 10),
+
           ButtonTheme(
             height: 40.0,
             minWidth: 2000.00,
@@ -107,7 +128,7 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
               onPressed: () {
                 if (_Form_Validation_Key.currentState.validate()){
                     Future.wait([
-                      Add_New_Course(Course_ID.text, Number_of_semesters.text),
+                      Add_New_Course(Course_ID.text, Number_of_semesters.text, total_no_of_credits.text),
                     ]).then((List <dynamic> future_value){
                       if (course_exist == true){
                         //course_exist = false;
