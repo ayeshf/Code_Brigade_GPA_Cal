@@ -22,6 +22,7 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
   Future <void> Add_New_Course(String course_id, String no_of_semester) async{
 
      await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
+       course_exist = false;
        filtered_courses.docs.forEach((filtered_courses_i) {
          print("Inside filtered_courses_i");
          course_exist = true;
@@ -109,7 +110,7 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
                       Add_New_Course(Course_ID.text, Number_of_semesters.text),
                     ]).then((List <dynamic> future_value){
                       if (course_exist == true){
-                        course_exist = false;
+                        //course_exist = false;
                         return showDialog(context: context, builder: (context){
                           return AlertDialog(
                             title: Text("Course ID Already Exist"),
@@ -145,30 +146,13 @@ class Add_New_Courses_State extends State<Add_New_Courses> {
                   print("Validation error");
 
                 }
-                //print(Number_of_semesters.text);
-
-
-
-
-
-
-
-
-                //Add_New_Course(Course_ID.text, Number_of_semesters.text);
-                //print("abc is ");
-                //print(abc);
-
-
               },
               child: Text("Add Course"),
 
             ),
 
           )
-
-
-
-
+              
             ],
           ),
       ),
