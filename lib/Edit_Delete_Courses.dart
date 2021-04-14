@@ -18,7 +18,6 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   bool course_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
   String Current_No_of_Semesters;
-  //String Current_Semester;
 
   Search_Button(){
     Future.wait([
@@ -46,26 +45,34 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
     });
   }
 
-  Delete_Button(){
+  Delete_Button() async{
     Future.wait([
       Search_New_Course(Course_ID.text),
     ]).then((List <dynamic> future_value){
       if (course_exist == true){
         course_exist = false;
-        //Number_of_semesters.text = Current_No_of_Semesters;
-        //firestore_courses_collection.doc().delete()
-        /*FirebaseFirestore.instance.collection("tblcourses").where('course_id', isEqualTo: Course_ID.text).get().then((queried_data){
+        FirebaseFirestore.instance.collection("tblcourses").where('course_id', isEqualTo: Course_ID.text).get().then((queried_data){
           queried_data.docs.forEach((queried_data_i) {
-            queried_data_i.delete().whenComplete((){
-
+            FirebaseFirestore.instance.collection("tblcourses").doc(queried_data_i.id).delete().then((delete_data){
+              return showDialog(context: context, builder: (context){
+                Number_of_semesters.text = "";
+                return AlertDialog(
+                  title: Text("Record Deleted"),
+                  actions: [
+                    RaisedButton(
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Ok"),
+                    )
+                  ],
+                );
+              });
             }
+
+            );
           });
-        });*/
-        //print(This_Document);
-        //This_Document.delete().whenComplete(() {
-        //  print("Document Deleted");
-        //});
-        //firestore_courses_collection.doc().document();
+        });
 
 
       }else {
@@ -92,7 +99,6 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
 
     await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
       filtered_courses.docs.forEach((filtered_courses_i) {
-        print("Inside filtered_courses_i");
         Current_No_of_Semesters = filtered_courses_i["no_of_semesters"];
         course_exist = true;
         return;
