@@ -29,6 +29,7 @@ class HomePageState extends State<HomePage> {
   var total_credits = 0.0;
   var credit_needed_for_course;
   var student_gpa;
+  bool gpa_calculation_is_complete = false;
   TextEditingController User_Question = TextEditingController();
   final firestoreInstance = FirebaseFirestore.instance;
 
@@ -59,15 +60,16 @@ class HomePageState extends State<HomePage> {
     if(Grade == "E+"){return 0.0;}
   }
 
-  void Calculate_GPA() async{
+  Future <void> Calculate_GPA() async{
     var total_gpa = 0.0;
 
-
+    print("global course id is " + globals.Global_Current_Course_ID.toString());
     await firestoreInstance.collection("tblcourses").where('course_id',isEqualTo:globals.Global_Current_Course_ID.toString()).get().then((queried_data) {
       queried_data.docs.forEach((queried_data_i) {
         setState((){
           globals.Global_Current_Semester_Count = int.parse(queried_data_i["no_of_semesters"]);
           credit_needed_for_course = int.parse(queried_data_i["total_credits"]);
+          print("Credits needed for course is " + credit_needed_for_course.toString());
           //print("global semester count is " + globals.Global_Current_Semester_Count.toString());
         });
       });
@@ -94,21 +96,15 @@ class HomePageState extends State<HomePage> {
           });
         });
       });
+      gpa_calculation_is_complete = true;
     });
-
-        /*.then((value) {
-      setState(() {
-        student_gpa = (total_gpa/total_credits);
-        print("student gpa at loop");
-        print(student_gpa.toString());
-      });
-    });*/
+    return;
   }
 
 
-  void Button1function(){
+  Future <void> Button1function() async{
     print("Current user is " + globals.Global_Current_User);
-    firestoreInstance.collection("tblstudents").where('student_email',isEqualTo:globals.Global_Current_User).get().then((queried_snapshot) {
+    await firestoreInstance.collection("tblstudents").where('student_email',isEqualTo:globals.Global_Current_User).get().then((queried_snapshot) {
       queried_snapshot.docs.forEach((queried_result) {
         setState((){
           print(queried_result);
@@ -122,9 +118,8 @@ class HomePageState extends State<HomePage> {
           globals.Global_Current_Course_ID = queried_result["course_id"];
           globals.Global_Current_User_Name = current_student_fname;
           globals.Global_Current_User_ID = current_student_id;
+          return;
         });
-
-        print ("my student id is " + current_student_id.toString());
       });
     });
 
@@ -137,14 +132,23 @@ class HomePageState extends State<HomePage> {
     //current_student_id = 5;
 
     if (first_time == 1){
-      Button1function();
-      Calculate_GPA();
+      Future.wait([
+        Button1function(),
+      ]).then((List <dynamic> future_value){
+        Future.wait([
+          Calculate_GPA()
+        ]).then((List <dynamic> future_value) {
+          print("GPA actually is  " + student_gpa.toString());
+        });
+
+      });
       //print("student gpa is ");
       //print(student_gpa.toString());
       first_time = 0;
+      print("First time is " + first_time.toString());
 
     }
-    if (globals.Global_Current_User_Name != null) {
+    if (globals.Global_Current_User_Name != null && credit_needed_for_course !=null && total_credits  != null && gpa_calculation_is_complete == true) {
       return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
