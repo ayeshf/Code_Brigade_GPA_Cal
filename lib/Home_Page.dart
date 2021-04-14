@@ -23,8 +23,71 @@ class HomePageState extends State<HomePage> {
   var current_student_lname;
   var current_student_mobile;
   var current_student_gender;
+  var student_gpa;
 
   final firestoreInstance = FirebaseFirestore.instance;
+
+  double Grade_To_GPA(String Grade){
+    if(Grade == "A+"){return 4.0;}
+    if(Grade == "A"){return 4.0;}
+    if(Grade == "A-"){return 3.7;}
+    if(Grade == "B+"){return 3.3;}
+    if(Grade == "B"){return 3.0;}
+    if(Grade == "B-"){return 2.7;}
+    if(Grade == "C+"){return 2.3;}
+    if(Grade == "C"){return 2.0;}
+    if(Grade == "C-"){return 1.7;}
+    if(Grade == "D+"){return 1.3;}
+    if(Grade == "D"){return 1.0;}
+    if(Grade == "E+"){return 0.0;}
+  }
+
+  void Calculate_GPA() async{
+    var total_gpa = 0.0;
+    var total_credits = 0.0;
+
+    await firestoreInstance.collection("tblcourses").where('course_id',isEqualTo:globals.Global_Current_Course_ID.toString()).get().then((queried_data) {
+      queried_data.docs.forEach((queried_data_i) {
+        setState((){
+          globals.Global_Current_Semester_Count = int.parse(queried_data_i["no_of_semesters"]);
+          //print("global semester count is " + globals.Global_Current_Semester_Count.toString());
+        });
+      });
+    });
+    await firestoreInstance.collection("tblresults").where('student_id',isEqualTo:globals.Global_Current_User_ID.toString()).get().then((queried_result) {
+      queried_result.docs.forEach((queried_result_i) {
+        setState(() {
+          firestoreInstance.collection("tblmodules").where('module_id', isEqualTo: queried_result_i["module_id"]).get().then((queried_module) {
+            queried_module.docs.forEach((queried_module_i) {
+              setState(() {
+                total_gpa = total_gpa + (Grade_To_GPA(queried_result_i["module_result"]) * int.parse(queried_module_i["module_credits"]));
+                total_credits = total_credits + int.parse(queried_module_i["module_credits"]);
+
+                student_gpa = (total_gpa/total_credits);
+                student_gpa = num.parse(student_gpa.toStringAsFixed(2));
+
+                print("total gpa is ");
+                print(total_gpa);
+                print("total credit is ");
+                print(total_credits);
+
+              });
+            });
+          });
+        });
+      });
+    });
+
+        /*.then((value) {
+      setState(() {
+        student_gpa = (total_gpa/total_credits);
+        print("student gpa at loop");
+        print(student_gpa.toString());
+      });
+    });*/
+  }
+
+
   void Button1function(){
     print("Current user is " + globals.Global_Current_User);
     firestoreInstance.collection("tblstudents").where('student_email',isEqualTo:globals.Global_Current_User).get().then((queried_snapshot) {
@@ -41,7 +104,6 @@ class HomePageState extends State<HomePage> {
           globals.Global_Current_Course_ID = queried_result["course_id"];
           globals.Global_Current_User_Name = current_student_fname;
           globals.Global_Current_User_ID = current_student_id;
-
         });
 
         print ("my student id is " + current_student_id.toString());
@@ -55,13 +117,18 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     //Button1function();
     //current_student_id = 5;
+
     if (first_time == 1){
       Button1function();
+      Calculate_GPA();
+      //print("student gpa is ");
+      //print(student_gpa.toString());
       first_time = 0;
 
     }
     if (globals.Global_Current_User_Name != null) {
       return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Colors.yellowAccent[400],
             title: Text(
@@ -69,95 +136,111 @@ class HomePageState extends State<HomePage> {
               style: TextStyle(color: Colors.blueAccent),
             ),
           ),
-          body: Container(
-              margin: EdgeInsets.all(50),
-              child: Column(
-                  children: [
-                    ExpansionTile(
-                      title: Text('Student Details'),
-                      initiallyExpanded: true,
-                      children: [
-                        ListTile(
-                          //leading: Text('Leading '),
-                          title: Text('Student ID'),
-                          subtitle: Text(current_student_id.toString()),
-                          //dense: true,
-                          //selected: true,
-                        ),
-                        ListTile(
-                          //leading: Text('Leading '),
-                          title: Text('Student Email'),
-                          subtitle: Text(current_student_email.toString()),
+          body: SingleChildScrollView(
 
-                          //dense: true,
-                          //selected: true,
-                        ),
-                        ListTile(
-                          //leading: Text('Leading '),
-                          title: Text('Student Name'),
-                          subtitle: Text(
-                              current_student_fname.toString() + " " +
-                                  current_student_lname.toString()),
-                          //dense: true,
-                          //selected: true,
-                        ),
-                        ListTile(
-                          //leading: Text('Leading '),
-                          title: Text('Mobile Phone'),
-                          subtitle: Text(current_student_mobile.toString()),
-                          //dense: true,
-                          //selected: true,
-                        ),
-                        ListTile(
-                          //leading: Text('Leading '),
-                          title: Text('Gender'),
-                          subtitle: Text(current_student_gender.toString()),
-                          //dense: true,
-                          //selected: true,
-                        ),
+              child: Container(
+                margin: EdgeInsets.all(50),
+                child: Column(
+                    children: [
+                      ExpansionTile(
+                        maintainState: true,
+                        title: Text('Student Details'),
+                        initiallyExpanded: true,
+                        children: [
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Student ID'),
+                            subtitle: Text(current_student_id.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Student Email'),
+                            subtitle: Text(current_student_email.toString()),
 
+                            //dense: true,
+                            //selected: true,
+                          ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Student Name'),
+                            subtitle: Text(
+                                current_student_fname.toString() + " " +
+                                    current_student_lname.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('GPA'),
+                            subtitle: Text(student_gpa.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
 
-                      ],
-
-                    ),
-                    RaisedButton(
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("View Results"),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Student_Results()),
-                          );
-                        }
-                    ),
-                    RaisedButton(
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Ask Question"),
-
-                        onPressed: () {
-                          Button1function();
-                        }
-                    ),
-                    RaisedButton(
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Sign out"),
-                        onPressed: () {
-                          globals.Global_Current_User_Type = 0;
-                          globals.Global_Current_User_Name = null;
-                          context.read<FBase_User_Login_Service>().signOut();
-                        }
-                    ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Mobile Phone'),
+                            subtitle: Text(current_student_mobile.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Gender'),
+                            subtitle: Text(current_student_gender.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
 
 
-                  ]
-              )
+                        ],
+
+                      ),
+                      RaisedButton(
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("View Results"),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Student_Results()),
+                            );
+                          }
+                      ),
+
+                      RaisedButton(
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Ask Question"),
+
+                          onPressed: () {
+                            Button1function();
+                          }
+                      ),
+                      RaisedButton(
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Sign out"),
+                          onPressed: () {
+                            globals.Global_Current_User_Type = 0;
+                            globals.Global_Current_User_Name = null;
+                            first_time = 1;
+                            context.read<FBase_User_Login_Service>().signOut();
+                          }
+                      ),
+
+
+
+
+                    ]
+                )
+            )
           )
 
       );
@@ -165,7 +248,7 @@ class HomePageState extends State<HomePage> {
       return Scaffold(
         body: Center(
           child:CircularProgressIndicator(
-              backgroundColor: Colors.grey,
+            backgroundColor: Colors.grey,
           ),
         ),
       );
