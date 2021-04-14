@@ -103,7 +103,6 @@ class Student_Results_State extends State<Student_Results> {
               queried_module.docs.forEach((queried_module_value){
                 if(queried_module_value["semester_number"] == "1"){
                   setState(() {
-
                     s1_gpa = s1_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
                     s1_total_credits = s1_total_credits + int.parse(queried_module_value["module_credits"]);
                     Module_List_s1.insert(s1_count, queried_result["module_id"]);
@@ -113,12 +112,47 @@ class Student_Results_State extends State<Student_Results> {
                 }
                 if(queried_module_value["semester_number"] == "2"){
                   setState(() {
-
                     s2_gpa = s2_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
                     s2_total_credits = s2_total_credits + int.parse(queried_module_value["module_credits"]);
                     Module_List_s2.insert(s2_count, queried_result["module_id"]);
                     Results_List_s2.insert(s2_count, queried_result["module_result"]);
                     s2_count++;
+                  });
+                }
+                if(queried_module_value["semester_number"] == "3"){
+                  setState(() {
+                    s3_gpa = s3_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
+                    s3_total_credits = s3_total_credits + int.parse(queried_module_value["module_credits"]);
+                    Module_List_s3.insert(s3_count, queried_result["module_id"]);
+                    Results_List_s3.insert(s3_count, queried_result["module_result"]);
+                    s3_count++;
+                  });
+                }
+                if(queried_module_value["semester_number"] == "4"){
+                  setState(() {
+                    s4_gpa = s4_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
+                    s4_total_credits = s4_total_credits + int.parse(queried_module_value["module_credits"]);
+                    Module_List_s4.insert(s4_count, queried_result["module_id"]);
+                    Results_List_s4.insert(s4_count, queried_result["module_result"]);
+                    s4_count++;
+                  });
+                }
+                if(queried_module_value["semester_number"] == "5"){
+                  setState(() {
+                    s5_gpa = s5_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
+                    s5_total_credits = s5_total_credits + int.parse(queried_module_value["module_credits"]);
+                    Module_List_s5.insert(s5_count, queried_result["module_id"]);
+                    Results_List_s5.insert(s5_count, queried_result["module_result"]);
+                    s5_count++;
+                  });
+                }
+                if(queried_module_value["semester_number"] == "6"){
+                  setState(() {
+                    s6_gpa = s6_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
+                    s6_total_credits = s6_total_credits + int.parse(queried_module_value["module_credits"]);
+                    Module_List_s6.insert(s6_count, queried_result["module_id"]);
+                    Results_List_s6.insert(s6_count, queried_result["module_result"]);
+                    s6_count++;
                   });
                 }
 
@@ -200,6 +234,75 @@ class Student_Results_State extends State<Student_Results> {
                             ),
                           ]
                       ),
+
+                      if (globals.Global_Current_Semester_Count >= 3)  ExpansionTile(
+                          title: Text('Semester 3', style:TextStyle(fontSize: 20)),
+                          subtitle: Text('GPA:  ' + (s3_gpa/s3_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+                          children: [
+                            ListView.builder(
+                              itemCount: Results_List_s3.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text('${Module_List_s3[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                  subtitle: Text('${Results_List_s3[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
+                                );
+                              },
+                              shrinkWrap: true,
+                            ),
+                          ]
+                      ),
+
+                      if (globals.Global_Current_Semester_Count >= 4)  ExpansionTile(
+                          title: Text('Semester 4', style:TextStyle(fontSize: 20)),
+                          subtitle: Text('GPA:  ' + (s4_gpa/s4_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+                          children: [
+                            ListView.builder(
+                              itemCount: Results_List_s4.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text('${Module_List_s4[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                  subtitle: Text('${Results_List_s4[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
+                                );
+                              },
+                              shrinkWrap: true,
+                            ),
+                          ]
+                      ),
+
+                      if (globals.Global_Current_Semester_Count >= 5)  ExpansionTile(
+                          title: Text('Semester 5', style:TextStyle(fontSize: 20)),
+                          subtitle: Text('GPA:  ' + (s5_gpa/s5_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+                          children: [
+                            ListView.builder(
+                              itemCount: Results_List_s5.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text('${Module_List_s5[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                  subtitle: Text('${Results_List_s5[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
+                                );
+                              },
+                              shrinkWrap: true,
+                            ),
+                          ]
+                      ),
+
+                      if (globals.Global_Current_Semester_Count >= 6)  ExpansionTile(
+                          title: Text('Semester 6', style:TextStyle(fontSize: 20)),
+                          subtitle: Text('GPA:  ' + (s6_gpa/s6_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+                          children: [
+                            ListView.builder(
+                              itemCount: Results_List_s6.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  title: Text('${Module_List_s6[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                                  subtitle: Text('${Results_List_s6[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
+                                );
+                              },
+                              shrinkWrap: true,
+                            ),
+                          ]
+                      ),
+
 
                     ]
                 )

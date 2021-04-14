@@ -198,7 +198,11 @@ class HomePageState extends State<HomePage> {
                         ],
 
                       ),
-                      RaisedButton(
+
+                      ButtonTheme(
+                        height: 40.0,
+                        minWidth: 2000.0,
+                        child: RaisedButton(
                           color: Colors.yellowAccent[400],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(9.0),),
@@ -210,9 +214,13 @@ class HomePageState extends State<HomePage> {
                                   builder: (context) => Student_Results()),
                             );
                           }
+                        ),
                       ),
 
-                      RaisedButton(
+                      ButtonTheme(
+                        height: 40.0,
+                        minWidth: 2000.0,
+                        child:RaisedButton(
                           color: Colors.yellowAccent[400],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(9.0),),
@@ -221,8 +229,13 @@ class HomePageState extends State<HomePage> {
                           onPressed: () {
                             Button1function();
                           }
+                        ),
                       ),
-                      RaisedButton(
+
+                      ButtonTheme(
+                        height: 40.0,
+                        minWidth: 2000.0,
+                        child: RaisedButton(
                           color: Colors.yellowAccent[400],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(9.0),),
@@ -233,6 +246,7 @@ class HomePageState extends State<HomePage> {
                             first_time = 1;
                             context.read<FBase_User_Login_Service>().signOut();
                           }
+                        ),
                       ),
 
 
