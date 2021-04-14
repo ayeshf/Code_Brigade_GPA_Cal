@@ -26,6 +26,8 @@ class HomePageState extends State<HomePage> {
   var current_student_lname;
   var current_student_mobile;
   var current_student_gender;
+  var total_credits = 0.0;
+  var credit_needed_for_course;
   var student_gpa;
   TextEditingController User_Question = TextEditingController();
   final firestoreInstance = FirebaseFirestore.instance;
@@ -59,12 +61,13 @@ class HomePageState extends State<HomePage> {
 
   void Calculate_GPA() async{
     var total_gpa = 0.0;
-    var total_credits = 0.0;
+
 
     await firestoreInstance.collection("tblcourses").where('course_id',isEqualTo:globals.Global_Current_Course_ID.toString()).get().then((queried_data) {
       queried_data.docs.forEach((queried_data_i) {
         setState((){
           globals.Global_Current_Semester_Count = int.parse(queried_data_i["no_of_semesters"]);
+          credit_needed_for_course = int.parse(queried_data_i["total_credits"]);
           //print("global semester count is " + globals.Global_Current_Semester_Count.toString());
         });
       });
@@ -190,6 +193,20 @@ class HomePageState extends State<HomePage> {
                             //leading: Text('Leading '),
                             title: Text('GPA'),
                             subtitle: Text(student_gpa.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Credits required for course'),
+                            subtitle: Text(credit_needed_for_course.toString()),
+                            //dense: true,
+                            //selected: true,
+                          ),
+                          ListTile(
+                            //leading: Text('Leading '),
+                            title: Text('Credits Earned'),
+                            subtitle: Text(total_credits.toString()),
                             //dense: true,
                             //selected: true,
                           ),
