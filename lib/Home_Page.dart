@@ -1,9 +1,12 @@
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:test1/User_Login_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'Global_Variables.dart' as globals;
 import 'package:test1/Student_Results.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -24,8 +27,20 @@ class HomePageState extends State<HomePage> {
   var current_student_mobile;
   var current_student_gender;
   var student_gpa;
-
+  TextEditingController User_Question = TextEditingController();
   final firestoreInstance = FirebaseFirestore.instance;
+
+  void Send_Email(String message) async{
+    final Email email = Email(
+      body: message,
+      subject: "Support Request from " + globals.Global_Current_User,
+      recipients: ['tm.code.brigade@gmail.com'],
+      isHTML: false,
+    );
+    await FlutterEmailSender.send(email);
+  }
+
+
 
   double Grade_To_GPA(String Grade){
     if(Grade == "A+"){return 4.0;}
@@ -227,7 +242,32 @@ class HomePageState extends State<HomePage> {
                           child: Text("Ask Question"),
 
                           onPressed: () {
-                            Button1function();
+                            return showDialog(context: context, builder: (context){
+                              return AlertDialog(
+                                title: Text("Please enter the question and press Ok"),
+                                content: TextField(
+                                  controller: User_Question,
+
+                                ),
+                                actions: [
+                                  RaisedButton(
+                                    child: Text("Submit"),
+                                    onPressed: (){
+                                      Send_Email(User_Question.text);
+                                      User_Question.text = "";
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  RaisedButton(
+                                    child: Text("Cancel"),
+                                    onPressed: (){
+                                      User_Question.text = "";
+                                      Navigator.of(context).pop();
+                                    },
+                                  )
+                                ],
+                              );
+                            });
                           }
                         ),
                       ),

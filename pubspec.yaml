@@ -18,6 +18,8 @@ dependencies:
   firebase_auth: ^0.18.0+1
   cloud_firestore:
   provider: ^4.3.2+1
+  mailer: ^3.0.3
+  flutter_email_sender: ^4.0.0
 
 
 dev_dependencies:
