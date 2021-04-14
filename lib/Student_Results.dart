@@ -38,6 +38,13 @@ class Student_Results_State extends State<Student_Results> {
   var s4_gpa = 0.0;
   var s5_gpa = 0.0;
   var s6_gpa = 0.0;
+  var s1_total_credits = 0;
+  var s2_total_credits = 0;
+  var s3_total_credits = 0;
+  var s4_total_credits = 0;
+  var s5_total_credits = 0;
+  var s6_total_credits = 0;
+
 
   //static var sem_count = globals.Global_Current_Semester_Count;
 
@@ -90,16 +97,14 @@ class Student_Results_State extends State<Student_Results> {
       firestoreInstance.collection("tblresults").where('student_id',isEqualTo:globals.Global_Current_User_ID.toString()).get().then((queried_snapshot) {
         queried_snapshot.docs.forEach((queried_result) {
           setState((){
-            //print("current_result_count is S1" + s1_count.toString());
-            //print(queried_result);
-            print("loop1 start");
 
             firestoreInstance.collection("tblmodules").where('module_id',isEqualTo:queried_result["module_id"]).get().then((queried_module) {
               queried_module.docs.forEach((queried_module_value){
                 if(queried_module_value["semester_number"] == "1"){
                   setState(() {
 
-                    s1_gpa = s1_gpa + Grade_To_GPA(queried_result["module_result"]);
+                    s1_gpa = s1_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
+                    s1_total_credits = s1_total_credits + int.parse(queried_module_value["module_credits"]);
                     Module_List_s1.insert(s1_count, queried_result["module_id"]);
                     Results_List_s1.insert(s1_count, queried_result["module_result"]);
                     s1_count++;
@@ -108,7 +113,8 @@ class Student_Results_State extends State<Student_Results> {
                 if(queried_module_value["semester_number"] == "2"){
                   setState(() {
 
-                    s2_gpa = s2_gpa + Grade_To_GPA(queried_result["module_result"]);
+                    s2_gpa = s2_gpa + (Grade_To_GPA(queried_result["module_result"]) * int.parse(queried_module_value["module_credits"]));
+                    s2_total_credits = s2_total_credits + int.parse(queried_module_value["module_credits"]);
                     Module_List_s2.insert(s2_count, queried_result["module_id"]);
                     Results_List_s2.insert(s2_count, queried_result["module_result"]);
                     s2_count++;
@@ -163,7 +169,7 @@ class Student_Results_State extends State<Student_Results> {
                     children:[
                       if (globals.Global_Current_Semester_Count >= 1)  ExpansionTile(
                         title: Text('Semester 1', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + s1_gpa.toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+                          subtitle: Text('GPA:  ' + (s1_gpa/s1_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
                           ListView.builder(
                             itemCount: Results_List_s1.length,
@@ -179,7 +185,7 @@ class Student_Results_State extends State<Student_Results> {
                       ),
                       if (globals.Global_Current_Semester_Count >= 2)  ExpansionTile(
                           title: Text('Semester 2', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + s2_gpa.toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+                          subtitle: Text('GPA:  ' + (s2_gpa/s2_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
                           children: [
                             ListView.builder(
                               itemCount: Results_List_s2.length,
