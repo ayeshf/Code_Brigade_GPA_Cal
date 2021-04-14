@@ -15,7 +15,6 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   final CollectionReference firestore_courses_collection = FirebaseFirestore.instance.collection('tblcourses');
   TextEditingController Course_ID = TextEditingController();
   TextEditingController Number_of_semesters = TextEditingController();
-  bool course_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
   String Current_No_of_Semesters;
   bool Search_Successful = false;
@@ -25,8 +24,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
     Future.wait([
       Search_New_Course(Course_ID.text),
     ]).then((List <dynamic> future_value){
-      if (course_exist == true){
-        course_exist = false;
+      if (Current_Document_ID != null){
         Number_of_semesters.text = Current_No_of_Semesters;
       }else{
         return showDialog(context: context, builder: (context){
@@ -51,8 +49,8 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
     Future.wait([
       Search_New_Course(Course_ID.text),
     ]).then((List <dynamic> future_value){
-      if (course_exist == true){
-        course_exist = false;
+      print(Current_Document_ID);
+      if (Current_Document_ID != null){
             FirebaseFirestore.instance.collection("tblcourses").doc(Current_Document_ID).delete().then((delete_data){
               return showDialog(context: context, builder: (context){
                 Number_of_semesters.text = "";
@@ -96,8 +94,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
     Future.wait([
       Search_New_Course(Course_ID.text),
     ]).then((List <dynamic> future_value){
-      if (course_exist == true){
-        course_exist = false;
+      if (Current_Document_ID != null){
         FirebaseFirestore.instance.collection('tblcourses').doc(Current_Document_ID).update(
             {
               "no_of_semesters" : Number_of_semesters.text
@@ -121,9 +118,6 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
 
         }
         );
-
-        //Number_of_semesters.text = Current_No_of_Semesters;
-
 
 
       }else{
@@ -149,11 +143,9 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
   Future <void> Search_New_Course(String course_id) async{
 
     await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
-      course_exist = false;
       Current_Document_ID = null;
       filtered_courses.docs.forEach((filtered_courses_i) {
         Current_No_of_Semesters = filtered_courses_i["no_of_semesters"];
-        course_exist = true;
         Current_Document_ID = filtered_courses_i.id;
         return;
       });
