@@ -59,179 +59,181 @@ class Admin_Main_Menu_State extends State<Admin_Main_Menu> {
             style: TextStyle(color: Colors.blueAccent),
           ),
         ),
-          body: Container(
-              margin: EdgeInsets.all(50),
-              child: Column(
-                  children: [
+          body: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.all(50),
+                child: Column(
+                    children: [
 
-                    Text(
-                      "Welcome to Administration Console",
-                      style: TextStyle(
-                        color: Colors.brown,
-                        fontSize: 25,
+                      Text(
+                        "Welcome to Administration Console",
+                        style: TextStyle(
+                          color: Colors.brown,
+                          fontSize: 25,
+                        ),
                       ),
-                    ),
 
 
-                    SizedBox(height: 30),
+                      SizedBox(height: 30),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
 
-                        },
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Add new users"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Add new users"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
 
-                        },
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Edit or delete user details"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Edit or delete user details"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
 
-                        },
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Add student results"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Add student results"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
 
-                        },
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Edit or delete results"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Edit or delete results"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
 
-                        },
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Add new modules"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Add new modules"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
 
-                        },
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Edit or delete modules"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Edit or delete modules"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Add_New_Courses()),
-                          );
-                        },
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Add_New_Courses()),
+                            );
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Add new courses"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Add new courses"),
+                        ),
                       ),
-                    ),
 
-                    SizedBox(height: 5),
+                      SizedBox(height: 5),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Edit_Delete_Courses()),
-                          );
-                        },
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Edit_Delete_Courses()),
+                            );
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Edit or delete courses"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Edit or delete courses"),
+                        ),
                       ),
-                    ),
 
 
-                    SizedBox(height: 10),
+                      SizedBox(height: 10),
 
-                    ButtonTheme(
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        onPressed: () {
-                          globals.Global_Current_User_Type = 0;
-                          globals.Global_Current_User_Name = null;
-                          context.read<FBase_User_Login_Service>().signOut();
-                        },
+                      ButtonTheme(
+                        minWidth: 2000.00,
+                        child: RaisedButton(
+                          onPressed: () {
+                            globals.Global_Current_User_Type = 0;
+                            globals.Global_Current_User_Name = null;
+                            context.read<FBase_User_Login_Service>().signOut();
+                          },
 
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),),
-                        child: Text("Sign Out"),
+                          color: Colors.yellowAccent[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9.0),),
+                          child: Text("Sign Out"),
+                        ),
                       ),
-                    ),
 
 
-                  ]
-              )
+                    ]
+                )
           )
+      )
 
       );
     }else{

@@ -180,7 +180,7 @@ class Student_Results_State extends State<Student_Results> {
     //current_student_id = 5;
     print(Module_List_s1);
     print(Results_List_s1);
-    if (first_time == 1){
+    if (first_time == 1) {
       first_time = 0;
       FindResults();
       //print(Module_List_s2[1]);
@@ -189,124 +189,197 @@ class Student_Results_State extends State<Student_Results> {
 
 
     }
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.yellowAccent[400],
-          title: Text(
-            'Welcome  ' + globals.Global_Current_User_Name,
-            style: TextStyle(color: Colors.blueAccent),
+    if (globals.Global_Current_Semester_Count != null){
+      return Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.yellowAccent[400],
+            title: Text(
+              'Welcome  ' + globals.Global_Current_User_Name,
+              style: TextStyle(color: Colors.blueAccent),
+            ),
           ),
-        ),
-        body: Container(
-            margin: EdgeInsets.all(50),
+          body: Container(
+              margin: EdgeInsets.all(50),
 
-                child:ListView(
-                    children:[
-                      if (globals.Global_Current_Semester_Count >= 1)  ExpansionTile(
-                        title: Text('Semester 1', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + (s1_gpa/s1_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
+              child: ListView(
+                  children: [
+                    if (globals.Global_Current_Semester_Count >=
+                        1) ExpansionTile(
+                        title: Text(
+                            'Semester 1', style: TextStyle(fontSize: 20)),
+                        subtitle: Text(
+                            'GPA:  ' + (s1_gpa / s1_total_credits).toString(),
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
                           ListView.builder(
                             itemCount: Results_List_s1.length,
                             itemBuilder: (context, index) {
                               return ListTile(
-                                title: Text('${Module_List_s1[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                subtitle: Text('${Results_List_s1[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
+                                title: Text(
+                                  '${Module_List_s1[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),),
+                                subtitle: Text(
+                                  '${Results_List_s1[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),),
                               );
                             },
                             shrinkWrap: true,
                           ),
                         ]
-                      ),
-                      if (globals.Global_Current_Semester_Count >= 2)  ExpansionTile(
-                          title: Text('Semester 2', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + (s2_gpa/s2_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
-                          children: [
-                            ListView.builder(
-                              itemCount: Results_List_s2.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text('${Module_List_s2[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                  subtitle: Text('${Results_List_s2[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                );
-                              },
-                              shrinkWrap: true,
-                            ),
-                          ]
-                      ),
+                    ),
+                    if (globals.Global_Current_Semester_Count >=
+                        2) ExpansionTile(
+                        title: Text(
+                            'Semester 2', style: TextStyle(fontSize: 20)),
+                        subtitle: Text(
+                            'GPA:  ' + (s2_gpa / s2_total_credits).toString(),
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 17)),
+                        children: [
+                          ListView.builder(
+                            itemCount: Results_List_s2.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  '${Module_List_s2[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),),
+                                subtitle: Text(
+                                  '${Results_List_s2[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),),
+                              );
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ]
+                    ),
 
-                      if (globals.Global_Current_Semester_Count >= 3)  ExpansionTile(
-                          title: Text('Semester 3', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + (s3_gpa/s3_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
-                          children: [
-                            ListView.builder(
-                              itemCount: Results_List_s3.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text('${Module_List_s3[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                  subtitle: Text('${Results_List_s3[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                );
-                              },
-                              shrinkWrap: true,
-                            ),
-                          ]
-                      ),
+                    if (globals.Global_Current_Semester_Count >=
+                        3) ExpansionTile(
+                        title: Text(
+                            'Semester 3', style: TextStyle(fontSize: 20)),
+                        subtitle: Text(
+                            'GPA:  ' + (s3_gpa / s3_total_credits).toString(),
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 17)),
+                        children: [
+                          ListView.builder(
+                            itemCount: Results_List_s3.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  '${Module_List_s3[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),),
+                                subtitle: Text(
+                                  '${Results_List_s3[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),),
+                              );
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ]
+                    ),
 
-                      if (globals.Global_Current_Semester_Count >= 4)  ExpansionTile(
-                          title: Text('Semester 4', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + (s4_gpa/s4_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
-                          children: [
-                            ListView.builder(
-                              itemCount: Results_List_s4.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text('${Module_List_s4[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                  subtitle: Text('${Results_List_s4[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                );
-                              },
-                              shrinkWrap: true,
-                            ),
-                          ]
-                      ),
+                    if (globals.Global_Current_Semester_Count >=
+                        4) ExpansionTile(
+                        title: Text(
+                            'Semester 4', style: TextStyle(fontSize: 20)),
+                        subtitle: Text(
+                            'GPA:  ' + (s4_gpa / s4_total_credits).toString(),
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 17)),
+                        children: [
+                          ListView.builder(
+                            itemCount: Results_List_s4.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  '${Module_List_s4[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),),
+                                subtitle: Text(
+                                  '${Results_List_s4[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),),
+                              );
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ]
+                    ),
 
-                      if (globals.Global_Current_Semester_Count >= 5)  ExpansionTile(
-                          title: Text('Semester 5', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + (s5_gpa/s5_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
-                          children: [
-                            ListView.builder(
-                              itemCount: Results_List_s5.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text('${Module_List_s5[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                  subtitle: Text('${Results_List_s5[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                );
-                              },
-                              shrinkWrap: true,
-                            ),
-                          ]
-                      ),
+                    if (globals.Global_Current_Semester_Count >=
+                        5) ExpansionTile(
+                        title: Text(
+                            'Semester 5', style: TextStyle(fontSize: 20)),
+                        subtitle: Text(
+                            'GPA:  ' + (s5_gpa / s5_total_credits).toString(),
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 17)),
+                        children: [
+                          ListView.builder(
+                            itemCount: Results_List_s5.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  '${Module_List_s5[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),),
+                                subtitle: Text(
+                                  '${Results_List_s5[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),),
+                              );
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ]
+                    ),
 
-                      if (globals.Global_Current_Semester_Count >= 6)  ExpansionTile(
-                          title: Text('Semester 6', style:TextStyle(fontSize: 20)),
-                          subtitle: Text('GPA:  ' + (s6_gpa/s6_total_credits).toString(), style:TextStyle(fontStyle: FontStyle.italic, fontSize: 17)),
-                          children: [
-                            ListView.builder(
-                              itemCount: Results_List_s6.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text('${Module_List_s6[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                                  subtitle: Text('${Results_List_s6[index]}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple),),
-                                );
-                              },
-                              shrinkWrap: true,
-                            ),
-                          ]
-                      ),
+                    if (globals.Global_Current_Semester_Count >=
+                        6) ExpansionTile(
+                        title: Text(
+                            'Semester 6', style: TextStyle(fontSize: 20)),
+                        subtitle: Text(
+                            'GPA:  ' + (s6_gpa / s6_total_credits).toString(),
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic, fontSize: 17)),
+                        children: [
+                          ListView.builder(
+                            itemCount: Results_List_s6.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text(
+                                  '${Module_List_s6[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),),
+                                subtitle: Text(
+                                  '${Results_List_s6[index]}', style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple),),
+                              );
+                            },
+                            shrinkWrap: true,
+                          ),
+                        ]
+                    ),
 
 
-                    ]
-                )
-                  /*RaisedButton(
+                  ]
+              )
+            /*RaisedButton(
                       color: Colors.yellowAccent[400],
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9.0),),
                       child: Text("Back"),
@@ -319,14 +392,19 @@ class Student_Results_State extends State<Student_Results> {
                   ),*/
 
 
-
-
-
-
-                //]
+            //]
             //)
-        )
+          )
 
-    );
+      );
+  }else{
+      return Scaffold(
+        body: Center(
+          child:CircularProgressIndicator(
+            backgroundColor: Colors.grey,
+          ),
+        ),
+      );
+    }
   }
 }
