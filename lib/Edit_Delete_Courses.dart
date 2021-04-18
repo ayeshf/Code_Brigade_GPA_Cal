@@ -195,7 +195,7 @@ class Edit_Delete_Courses_State extends State<Edit_Delete_Courses> {
                   ),
                 ),
 
-                SizedBox(height: 10),
+                SizedBox(height: 30),
 
                 TextFormField(
                   controller: Number_of_semesters,
