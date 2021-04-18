@@ -208,7 +208,7 @@ class Student_Results_State extends State<Student_Results> {
                         title: Text(
                             'Semester 1', style: TextStyle(fontSize: 20)),
                         subtitle: Text(
-                            'GPA:  ' + (s1_gpa / s1_total_credits).toString(),
+                            'GPA:  ' + (num.parse((s1_gpa / s1_total_credits).toStringAsFixed(2))).toString(),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
@@ -236,7 +236,7 @@ class Student_Results_State extends State<Student_Results> {
                         title: Text(
                             'Semester 2', style: TextStyle(fontSize: 20)),
                         subtitle: Text(
-                            'GPA:  ' + (s2_gpa / s2_total_credits).toString(),
+                            'GPA:  ' + (num.parse((s2_gpa / s2_total_credits).toStringAsFixed(2))).toString(),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
@@ -265,7 +265,7 @@ class Student_Results_State extends State<Student_Results> {
                         title: Text(
                             'Semester 3', style: TextStyle(fontSize: 20)),
                         subtitle: Text(
-                            'GPA:  ' + (s3_gpa / s3_total_credits).toString(),
+                            'GPA:  ' + (num.parse((s3_gpa / s3_total_credits).toStringAsFixed(2))).toString(),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
@@ -294,7 +294,7 @@ class Student_Results_State extends State<Student_Results> {
                         title: Text(
                             'Semester 4', style: TextStyle(fontSize: 20)),
                         subtitle: Text(
-                            'GPA:  ' + (s4_gpa / s4_total_credits).toString(),
+                            'GPA:  ' + (num.parse((s4_gpa / s4_total_credits).toStringAsFixed(2))).toString(),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
@@ -323,7 +323,7 @@ class Student_Results_State extends State<Student_Results> {
                         title: Text(
                             'Semester 5', style: TextStyle(fontSize: 20)),
                         subtitle: Text(
-                            'GPA:  ' + (s5_gpa / s5_total_credits).toString(),
+                            'GPA:  ' + (num.parse((s5_gpa / s5_total_credits).toStringAsFixed(2))).toString(),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
@@ -352,7 +352,7 @@ class Student_Results_State extends State<Student_Results> {
                         title: Text(
                             'Semester 6', style: TextStyle(fontSize: 20)),
                         subtitle: Text(
-                            'GPA:  ' + (s6_gpa / s6_total_credits).toString(),
+                            'GPA:  ' + (num.parse((s6_gpa / s6_total_credits).toStringAsFixed(2))).toString(),
                             style: TextStyle(
                                 fontStyle: FontStyle.italic, fontSize: 17)),
                         children: [
