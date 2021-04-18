@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'Global_Variables.dart' as globals;
 
 //comment 9.54pm
+//comment by Nizaad at 4.21 pm
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
