@@ -12,41 +12,58 @@ class Add_Modules extends StatefulWidget {
 
 class Add_Modules_State extends State<Add_Modules> {
 
-  final CollectionReference firestore_courses_collection = FirebaseFirestore.instance.collection('tblcourses');
+  final CollectionReference firestore_module_collection = FirebaseFirestore.instance.collection('tblmodules');
   TextEditingController Course_ID= TextEditingController();
   TextEditingController Module_ID= TextEditingController();
   TextEditingController Module_Credits= TextEditingController();
   TextEditingController Module_Sem_Number= TextEditingController();
+  bool module_exist = false;
 
 
-
-  bool course_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
 
 
-  /*Future <void> Add_New_Course(String course_id, String no_of_semester, String no_of_credits) async{
+  Future <void> Add_New_Module(String course_id, String module_id, String module_credits, String module_sem_number) async{
+    print("Inside Add_New_Module Function");
+    print(module_exist);
+    print(course_id);
+    print(module_id);
+    print(module_credits);
+    print(module_sem_number);
 
-    await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
-      course_exist = false;
-      filtered_courses.docs.forEach((filtered_courses_i) {
-        print("Inside filtered_courses_i");
-        course_exist = true;
-        return;
+
+    await firestore_module_collection.where('course_id', isEqualTo: course_id).get().then((filtered_modules){
+      module_exist = false;
+      filtered_modules.docs.forEach((filtered_modules_i) {
+        setState(() {
+          if (filtered_modules_i["module_id"] == module_id){
+            module_exist = true;
+            print("filtered_modules_i is" + filtered_modules_i["module_id"]);
+            return;
+          }
+
+        });
       });
     });
 
-    if (course_exist == false){
+    if (module_exist == false){
+
+      print("module adding part running");
       Course_ID.text = "";
-      Number_of_semesters.text = "";
-      total_no_of_credits.text = "";
-      return await firestore_courses_collection.doc().set({
+      Module_ID.text = "";
+      Module_Credits.text = "";
+      Module_Sem_Number.text = "";
+      return await firestore_module_collection.doc().set({
         'course_id' : course_id,
-        'no_of_semesters' : no_of_semester,
-        'total_credits' : no_of_credits,
+        'module_id' : module_id,
+        'module_credits' : module_credits,
+        'semester_number' : module_sem_number,
       });
     }
 
-  }*/
+  }
+
+
 
   @override
   Widget build(BuildContext context){
@@ -95,7 +112,6 @@ class Add_Modules_State extends State<Add_Modules> {
                         return null;
                       },
                       controller: Module_ID,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                           labelText: "Module ID",
                           fillColor: Colors.amber[400], filled: true
@@ -112,6 +128,7 @@ class Add_Modules_State extends State<Add_Modules> {
                         return null;
                       },
                       controller: Module_Credits,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                           labelText: "Module Credits",
                           fillColor: Colors.amber[400], filled: true
@@ -128,6 +145,7 @@ class Add_Modules_State extends State<Add_Modules> {
                         return null;
                       },
                       controller: Module_Sem_Number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                           labelText: "Module Semester Number",
                           fillColor: Colors.amber[400], filled: true
@@ -145,7 +163,48 @@ class Add_Modules_State extends State<Add_Modules> {
                           borderRadius: BorderRadius.circular(9.0),
                         ),
                         onPressed: () {
+                          print("Add Module button Pressed");
+                          if (_Form_Validation_Key.currentState.validate()){
+                            Future.wait([
+                              Add_New_Module(Course_ID.text, Module_ID.text, Module_Credits.text, Module_Sem_Number.text),
+                            ]).then((List <dynamic> future_value){
+                              if (module_exist == true){
+                                //course_exist = false;
+                                return showDialog(context: context, builder: (context){
+                                  return AlertDialog(
+                                    title: Text("Module ID Already Exist"),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      )
+                                    ],
+                                  );
+                                });
+                              }else{
+                                return showDialog(context: context, builder: (context){
+                                  return AlertDialog(
+                                    title: Text("Module Added Successfully"),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      )
+                                    ],
+                                  );
+                                });
+                              }
+                            });
 
+
+                          }else{
+                            print("Validation error");
+
+                          }
                         },
                         child: Text("Add Module"),
 
