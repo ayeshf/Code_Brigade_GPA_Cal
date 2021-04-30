@@ -12,40 +12,154 @@ class Edit_Student_Results extends StatefulWidget {
 
 class Edit_Student_Results_State extends State<Edit_Student_Results> {
 
-  final CollectionReference firestore_courses_collection = FirebaseFirestore.instance.collection('tblcourses');
+  final CollectionReference firestore_results_collection = FirebaseFirestore.instance.collection('tblresults');
   TextEditingController Student_ID= TextEditingController();
   TextEditingController Module_ID= TextEditingController();
   TextEditingController Module_Result = TextEditingController();
-
-
+  String Current_Document_ID;
+  String Current_Result;
 
   bool course_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
 
 
-  /*Future <void> Add_New_Course(String course_id, String no_of_semester, String no_of_credits) async{
+  Search_Button(){
+    Future.wait([
+      Search_Result(Student_ID.text, Module_ID.text),
+    ]).then((List <dynamic> future_value){
+      if (Current_Document_ID != null){
+        Module_Result.text = Current_Result;
+      }else{
+        return showDialog(context: context, builder: (context){
+          Module_Result.text = "";
+          return AlertDialog(
+            title: Text("Unable to find Result Record"),
+            actions: [
+              RaisedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        });
+      }
+    });
+  }
 
-    await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
-      course_exist = false;
-      filtered_courses.docs.forEach((filtered_courses_i) {
-        print("Inside filtered_courses_i");
-        course_exist = true;
-        return;
+  Delete_Button() async{
+    Future.wait([
+      Search_Result(Student_ID.text, Module_ID.text),
+    ]).then((List <dynamic> future_value){
+      print(Current_Document_ID);
+      if (Current_Document_ID != null){
+        FirebaseFirestore.instance.collection("tblresults").doc(Current_Document_ID).delete().then((delete_data){
+          return showDialog(context: context, builder: (context){
+            Student_ID.text = "";
+            Module_ID.text = "";
+            Module_Result.text = "";
+            return AlertDialog(
+              title: Text("Record Deleted"),
+              actions: [
+                RaisedButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Ok"),
+                )
+              ],
+            );
+          });
+        });
+
+
+
+      }else {
+        return showDialog(context: context, builder: (context){
+          Module_Result.text = "";
+          return AlertDialog(
+            title: Text("Unable to find Result Record"),
+            actions: [
+              RaisedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        });
+      }
+    });
+  }
+
+  Update_Button(){
+    Future.wait([
+      Search_Result(Student_ID.text, Module_ID.text),
+    ]).then((List <dynamic> future_value){
+      if (Current_Document_ID != null){
+        FirebaseFirestore.instance.collection('tblresults').doc(Current_Document_ID).update(
+            {
+              "module_result" : Module_Result.text,
+            }).then((values){
+          Current_Document_ID = null;
+          return showDialog(context: context, builder: (context){
+            Student_ID.text = "";
+            Module_ID.text = "";
+            Module_Result.text = "";
+            return AlertDialog(
+              title: Text("Record Updated"),
+              actions: [
+                RaisedButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Ok"),
+                )
+              ],
+            );
+          });
+
+        }
+        );
+
+
+      }else{
+        return showDialog(context: context, builder: (context){
+          Module_Result.text = "";
+          return AlertDialog(
+            title: Text("Unable to find Result Record"),
+            actions: [
+              RaisedButton(
+                onPressed: (){
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        });
+      }
+    });
+  }
+
+  Future <void> Search_Result(String student_id, String module_id) async{
+
+    await firestore_results_collection.where('student_id', isEqualTo: student_id).get().then((filtered_results){
+      Current_Document_ID = null;
+      filtered_results.docs.forEach((filtered_results_i) {
+        if (filtered_results_i["module_id"] == module_id){
+          Current_Result = filtered_results_i["module_result"];
+          Current_Document_ID = filtered_results_i.id;
+          return;
+        }
       });
     });
+  }
 
-    if (course_exist == false){
-      Course_ID.text = "";
-      Number_of_semesters.text = "";
-      total_no_of_credits.text = "";
-      return await firestore_courses_collection.doc().set({
-        'course_id' : course_id,
-        'no_of_semesters' : no_of_semester,
-        'total_credits' : no_of_credits,
-      });
-    }
 
-  }*/
+
 
   @override
   Widget build(BuildContext context){
@@ -94,7 +208,6 @@ class Edit_Student_Results_State extends State<Edit_Student_Results> {
                         return null;
                       },
                       controller: Module_ID,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                           labelText: "Module ID",
                           fillColor: Colors.amber[400], filled: true
@@ -104,12 +217,6 @@ class Edit_Student_Results_State extends State<Edit_Student_Results> {
                     SizedBox(height: 30),
 
                     TextFormField(
-                      validator: (validator_input) {
-                        if(validator_input == null || validator_input.isEmpty){
-                          return 'This field is mandatory';
-                        }
-                        return null;
-                      },
                       controller: Module_Result,
                       decoration: InputDecoration(
                           labelText: "Module Result",
@@ -131,7 +238,7 @@ class Edit_Student_Results_State extends State<Edit_Student_Results> {
                         ),
                         onPressed: () {
                           if (_Form_Validation_Key.currentState.validate()){
-
+                            Search_Button();
                           }else{
                             print("Validation error");
                           }
@@ -152,7 +259,7 @@ class Edit_Student_Results_State extends State<Edit_Student_Results> {
                         ),
                         onPressed: () {
                           if (_Form_Validation_Key.currentState.validate()){
-
+                            Update_Button();
                           }else{
                             print("Validation error");
                           }
@@ -173,7 +280,7 @@ class Edit_Student_Results_State extends State<Edit_Student_Results> {
                         ),
                         onPressed: () {
                           if (_Form_Validation_Key.currentState.validate()){
-
+                            Delete_Button();
                           }else{
                             print("Validation error");
                           }
