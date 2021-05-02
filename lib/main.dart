@@ -64,6 +64,7 @@ class Auth_Process_State extends State<Auth_Process> {
         //print("Student query success");
         globals.Global_Current_User = firebaseUser.email;
         globals.Global_Current_User_Type = 1;
+        print("student identified");
         return Future.value(true);
       });
     });
@@ -72,6 +73,7 @@ class Auth_Process_State extends State<Auth_Process> {
         //print("Student query success");
         globals.Global_Current_User = firebaseUser.email;
         globals.Global_Current_User_Type = 2;
+        print("admin identified");
         return Future.value(true);
       });
     });

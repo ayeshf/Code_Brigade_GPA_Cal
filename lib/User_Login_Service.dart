@@ -38,9 +38,12 @@ class FBase_User_Login_Service {
   /// error messages. That way you can throw, return or whatever you prefer with that instead.
   Future<String> signUp({String email, String password}) async {
     try {
+      print("Inside signup Try block");
       await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
       return "Signed up";
     } on FirebaseAuthException catch (e) {
+      print("Inside signup Catch block");
+      print(e.message);
       return e.message;
     }
   }

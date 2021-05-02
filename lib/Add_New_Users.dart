@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'Global_Variables.dart' as globals;
+import 'package:test1/User_Login_Service.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Add_New_Users extends StatefulWidget {
   @override
@@ -12,50 +16,71 @@ class Add_New_Users extends StatefulWidget {
 
 class Add_New_Users_State extends State<Add_New_Users> {
 
-  final CollectionReference firestore_courses_collection = FirebaseFirestore.instance.collection('tblcourses');
+  final CollectionReference firestore_students_collection = FirebaseFirestore.instance.collection('tblstudents');
+  final CollectionReference firestore_admin_collection = FirebaseFirestore.instance.collection('tbladmins');
   TextEditingController User_Email= TextEditingController();
+  TextEditingController User_Password= TextEditingController();
   TextEditingController User_ID= TextEditingController();
   TextEditingController User_FName = TextEditingController();
   TextEditingController User_LName = TextEditingController();
   String User_Gender;
   TextEditingController User_Mobile= TextEditingController();
   TextEditingController User_Course_ID= TextEditingController();
-  String User_Type;
-
-
-
-  bool course_exist = false;
+  String User_Type = "Student";
+  bool user_exist = false;
   final _Form_Validation_Key = GlobalKey<FormState>();
 
-
-  /*Future <void> Add_New_Course(String course_id, String no_of_semester, String no_of_credits) async{
-
-    await firestore_courses_collection.where('course_id', isEqualTo: course_id).get().then((filtered_courses){
-      course_exist = false;
-      filtered_courses.docs.forEach((filtered_courses_i) {
-        print("Inside filtered_courses_i");
-        course_exist = true;
+  Future <void> Query_Student_DB(String user_email) async{
+    await firestore_students_collection.where('student_email', isEqualTo: user_email).get().then((filtered_students){
+      filtered_students.docs.forEach((filtered_students_i) {
+        print("Inside filtered_students_i");
+        user_exist = true;
         return;
       });
     });
+  }
 
-    if (course_exist == false){
-      Course_ID.text = "";
-      Number_of_semesters.text = "";
-      total_no_of_credits.text = "";
-      return await firestore_courses_collection.doc().set({
-        'course_id' : course_id,
-        'no_of_semesters' : no_of_semester,
-        'total_credits' : no_of_credits,
+  Future <void> Query_Admin_DB(String user_email) async{
+    await firestore_admin_collection.where('admin_email', isEqualTo: user_email).get().then((filtered_admins){
+      filtered_admins.docs.forEach((filtered_admins_i) {
+        print("Inside filtered_admins_i");
+        user_exist = true;
+        return;
       });
-    }
+    });
+  }
 
-  }*/
+  Future <void> Add_New_Student(String user_email, String f_name, String l_name, String user_id, String gender, String user_mobile, String course_id) async{
+    return await firestore_students_collection.doc().set({
+      'student_email' : user_email,
+      'student_fname' : f_name,
+      'student_lname' : l_name,
+      'student_id' : user_id,
+      'student_gender' : gender,
+      'student_mobile' : user_mobile,
+      'course_id' : course_id,
+    });
+  }
+
+  Future <void> Add_New_Admin(String user_email, String f_name, String l_name, String user_id, String gender, String user_mobile) async{
+    return await firestore_admin_collection.doc().set({
+      'admin_email' : user_email,
+      'admin_fname' : f_name,
+      'admin_lname' : l_name,
+      'admin_id' : user_id,
+      'admin_gender' : gender,
+      'admin_mobile' : user_mobile,
+
+    });
+  }
+
+
+
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: Colors.yellowAccent[400],
           title: Text(
@@ -111,6 +136,10 @@ class Add_New_Users_State extends State<Add_New_Users> {
                       if(validator_input == null || validator_input.isEmpty){
                         return 'This field is mandatory';
                       }
+                      if(!validator_input.contains("@")){
+                        return 'Please enter your email address here';
+                      }
+
                       return null;
                     },
                     controller: User_Email,
@@ -130,7 +159,7 @@ class Add_New_Users_State extends State<Add_New_Users> {
                       return null;
                     },
                     controller: User_ID,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    //inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                         labelText: "User ID",
                         fillColor: Colors.amber[400], filled: true
@@ -210,6 +239,7 @@ class Add_New_Users_State extends State<Add_New_Users> {
                     },
                     controller: User_Mobile,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+
                     decoration: InputDecoration(
                         labelText: "Mobile Number",
                         fillColor: Colors.amber[400], filled: true
@@ -219,12 +249,6 @@ class Add_New_Users_State extends State<Add_New_Users> {
                   SizedBox(height: 10),
 
                   TextFormField(
-                    validator: (validator_input) {
-                      if(validator_input == null || validator_input.isEmpty){
-                        return 'This field is mandatory';
-                      }
-                      return null;
-                    },
                     controller: User_Course_ID,
                     decoration: InputDecoration(
                         labelText: "Course ID",
@@ -240,9 +264,13 @@ class Add_New_Users_State extends State<Add_New_Users> {
                       if(validator_input == null || validator_input.isEmpty){
                         return 'This field is mandatory';
                       }
+                      if(validator_input.length < 6){
+                        return 'There should be minimum 6 characters';
+                      }
                       return null;
                     },
-                    controller: User_Email,
+                    controller: User_Password,
+                    obscureText: true,
                     decoration: InputDecoration(
                         labelText: "Set Password",
                         fillColor: Colors.amber[400], filled: true
@@ -265,16 +293,19 @@ class Add_New_Users_State extends State<Add_New_Users> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(9.0),
                       ),
-                      onPressed: () {/*
-                        if (_Form_Validation_Key.currentState.validate()){
+                      onPressed: () {
+                        if (_Form_Validation_Key.currentState.validate()) {
+                          print("Create Account button Pressed");
+                          user_exist = false;
                           Future.wait([
-                            Add_New_Course(Course_ID.text, Number_of_semesters.text, total_no_of_credits.text),
-                          ]).then((List <dynamic> future_value){
-                            if (course_exist == true){
-                              //course_exist = false;
+                            Query_Student_DB(User_Email.text),
+                            Query_Admin_DB(User_Email.text),
+                          ]).then((List <dynamic> future_value) {
+                            if (user_exist == true) {
+                              print("User Already Exist");
                               return showDialog(context: context, builder: (context){
                                 return AlertDialog(
-                                  title: Text("Course ID Already Exist"),
+                                  title: Text("User Already Exist"),
                                   actions: [
                                     RaisedButton(
                                       onPressed: (){
@@ -285,19 +316,57 @@ class Add_New_Users_State extends State<Add_New_Users> {
                                   ],
                                 );
                               });
-                            }else{
-                              return showDialog(context: context, builder: (context){
-                                return AlertDialog(
-                                  title: Text("Course Added Successfully"),
-                                  actions: [
-                                    RaisedButton(
-                                      onPressed: (){
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text("Ok"),
-                                    )
-                                  ],
-                                );
+                            } else {
+                              print("No Such User");
+                              print("Type Selected =" + User_Type);
+                              if (User_Type == "Student") {
+                                Add_New_Student(User_Email.text, User_FName.text,User_LName.text, User_ID.text, User_Gender, User_Mobile.text, User_Course_ID.text);
+                              }
+                              if (User_Type == "Administrator") {
+                                Add_New_Admin(User_Email.text, User_FName.text,User_LName.text, User_ID.text, User_Gender, User_Mobile.text);
+                              }
+
+                              Future.wait([
+                                context.read<FBase_User_Login_Service>().signUp(
+                                  email: User_Email.text.trim(),
+                                  password: User_Password.text.trim(),
+                                ),
+                              ]).then((List <dynamic> future_value) {
+                                print("Created the account");
+                                User user2 = FirebaseAuth.instance.currentUser;
+                                print(user2.uid);
+                                Future.wait([
+                                  context.read<FBase_User_Login_Service>()
+                                      .signIn(
+                                    email: globals.Global_Current_User.trim(),
+                                    password: globals.Global_Current_Password
+                                        .trim(),
+                                  ),
+                                ]).then((List <dynamic> future_value) {
+                                  User user3 = FirebaseAuth.instance.currentUser;
+                                  print(user3.uid);
+                                  print("User Creation Completed");
+                                  User_Email.text = "";
+                                  User_FName.text = "";
+                                  User_LName.text = "";
+                                  User_ID.text = "";
+                                  User_Mobile.text = "";
+                                  User_Course_ID.text = "";
+                                  return showDialog(context: context, builder: (context){
+                                    return AlertDialog(
+                                      title: Text("User Created Successfully"),
+                                      actions: [
+                                        RaisedButton(
+                                          onPressed: (){
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("Ok"),
+                                        )
+                                      ],
+                                    );
+                                  });
+
+                                });
                               });
                             }
                           });
@@ -305,8 +374,7 @@ class Add_New_Users_State extends State<Add_New_Users> {
 
                         }else{
                           print("Validation error");
-
-                        }*/
+                        }
                       },
                       child: Text("Create Account"),
 

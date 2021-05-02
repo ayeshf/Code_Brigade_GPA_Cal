@@ -93,6 +93,7 @@ class Login_Page_State extends State<Login_Page> {
                                   ),
                                 ]).then((List <dynamic> future_value){
                                   print("Inside Future Wait");
+                                  globals.Global_Current_Password = passwordController.text;
                                   print(globals.Global_Login_Fail);
                                   if (globals.Global_Login_Fail == true){
                                     globals.Global_Login_Fail = false;

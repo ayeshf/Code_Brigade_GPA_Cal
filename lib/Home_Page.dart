@@ -62,6 +62,7 @@ class HomePageState extends State<HomePage> {
 
   Future <void> Calculate_GPA() async{
     var total_gpa = 0.0;
+    print("Calculate GPA Function");
 
     print("global course id is " + globals.Global_Current_Course_ID.toString());
     await firestoreInstance.collection("tblcourses").where('course_id',isEqualTo:globals.Global_Current_Course_ID.toString()).get().then((queried_data) {
@@ -107,7 +108,7 @@ class HomePageState extends State<HomePage> {
     await firestoreInstance.collection("tblstudents").where('student_email',isEqualTo:globals.Global_Current_User).get().then((queried_snapshot) {
       queried_snapshot.docs.forEach((queried_result) {
         setState((){
-          print(queried_result);
+          print("Inside set state button function");
           print(queried_result["student_email"]);
           current_student_id = queried_result["student_id"];
           current_student_email = queried_result["student_email"];
@@ -118,6 +119,7 @@ class HomePageState extends State<HomePage> {
           globals.Global_Current_Course_ID = queried_result["course_id"];
           globals.Global_Current_User_Name = current_student_fname;
           globals.Global_Current_User_ID = current_student_id;
+
           return;
         });
       });
@@ -148,13 +150,19 @@ class HomePageState extends State<HomePage> {
       print("First time is " + first_time.toString());
 
     }
-    if (globals.Global_Current_User_Name != null && credit_needed_for_course !=null && total_credits  != null && gpa_calculation_is_complete == true) {
+    print("Starting Variable Print");
+    print(globals.Global_Current_User_Name.toString());
+    print(credit_needed_for_course.toString());
+    print(total_credits.toString());
+    print(gpa_calculation_is_complete.toString());
+
+    if (globals.Global_Current_User_Name != null && credit_needed_for_course !=null && total_credits  != null) {
       return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             backgroundColor: Colors.yellowAccent[400],
             title: Text(
-              'Welcome  ' + globals.Global_Current_User_Name,
+                'Welcome  ' + globals.Global_Current_User_Name,
               style: TextStyle(color: Colors.blueAccent),
             ),
           ),
