@@ -68,8 +68,6 @@ class Edit_Users_State extends State<Edit_Users> {
           User_Type.text = "";
           User_Mobile.text = "";
           User_Course_ID.text = "";
-
-
           return AlertDialog(
             title: Text("Unable to find such user"),
             actions: [
@@ -88,48 +86,7 @@ class Edit_Users_State extends State<Edit_Users> {
     });
   }
 
-  Update_Button(){
-    print("Update Function");
 
-
-    /*if (User_Category == "Student"){
-      FirebaseFirestore.instance.collection('tblstudents').doc(Current_Document_ID).update(
-          {
-            "student_email" : User_Email.text,
-            "student_id" : User_ID.text,
-            "student_fname" : User_FName.text,
-            "student_lname" : User_LName.text,
-            "student_gender" : User_Gender,
-            "student_mobile" : User_Mobile.text,
-            "course_id" : User_Course_ID.text,
-          }).then((values){
-        Current_Document_ID = null;
-        return showDialog(context: context, builder: (context){
-          User_Email.text = "";
-          User_ID.text = "";
-          User_FName.text = "";
-          User_LName.text = "";
-          User_Gender = "";
-          User_Mobile.text = "";
-          User_Course_ID.text = "";
-
-          return AlertDialog(
-            title: Text("Record Updated"),
-            actions: [
-              RaisedButton(
-                onPressed: (){
-                  Navigator.of(context).pop();
-                },
-                child: Text("Ok"),
-              )
-            ],
-          );
-        });
-
-      }
-      );
-    }*/
-  }
 
 
 
@@ -230,40 +187,13 @@ class Edit_Users_State extends State<Edit_Users> {
                       ),
                     ),
 
-                    SizedBox(height: 10),
 
-                    TextFormField(
-                      decoration: InputDecoration(
-                          labelText: "Set Password",
-                          fillColor: Colors.amber[400], filled: true
-                      ),
-                    ),
 
-                    SizedBox(height: 10),
 
-                    ButtonTheme(
-                      height: 40.0,
-                      minWidth: 2000.00,
-                      child: RaisedButton(
-                        child: Text("Reset Password"),
-                        color: Colors.yellowAccent[400],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(9.0),
-                        ),
-                        onPressed: () {
-                          if (_Form_Validation_Key.currentState.validate()){
-
-                          }else{
-                            print("Validation error");
-                          }
-                        },
-                      ),
-                    ),
 
                     SizedBox(height: 30),
 
 
-                    SizedBox(height: 10),
 
                     TextFormField(
                       enabled: false,
@@ -376,7 +306,6 @@ class Edit_Users_State extends State<Edit_Users> {
                               Search_Student(User_Email.text),
                               Search_Admin(User_Email.text),
                             ]).then((List <dynamic> future_value) {
-                              //setState((){
                               if (User_Category == "Student") {
                                 print(User_Gender);
 
@@ -391,8 +320,28 @@ class Edit_Users_State extends State<Edit_Users> {
                                   "course_id" : User_Course_ID.text,
                                 });
 
+                                return showDialog(context: context, builder: (context){
+                                  User_ID.text = "";
+                                  User_FName.text = "";
+                                  User_LName.text = "";
+                                  User_Type.text = "";
+                                  User_Mobile.text = "";
+                                  User_Course_ID.text = "";
+                                  return AlertDialog(
+                                    title: Text("Record Updated"),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      )
+                                    ],
+                                  );
+                                });
+
                               }
-                              if (User_Category == "Admin") {
+                              else if (User_Category == "Admin") {
                                 print(User_Category);
 
                                 FirebaseFirestore.instance.collection('tbladmins') .doc(Current_Document_ID).update(
@@ -404,9 +353,30 @@ class Edit_Users_State extends State<Edit_Users> {
                                       "admin_gender": Temp_Gender,
                                       "admin_mobile": User_Mobile.text,
                                     });
+
+                                return showDialog(context: context, builder: (context){
+                                  User_ID.text = "";
+                                  User_FName.text = "";
+                                  User_LName.text = "";
+                                  User_Type.text = "";
+                                  User_Mobile.text = "";
+                                  User_Course_ID.text = "";
+                                  return AlertDialog(
+                                    title: Text("Record Updated"),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: (){
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      )
+                                    ],
+                                  );
+                                });
+
                               }
 
-                              if (User_Category == "None") {
+                              else if (User_Category == "None") {
                                 User_Gender = "";
                                 Gender_State.currentState.didChange(User_Gender);
                                 return showDialog(context: context, builder: (context) {
@@ -431,7 +401,6 @@ class Edit_Users_State extends State<Edit_Users> {
                                   );
                                 });
                               }
-                              //});
 
                             });
 
@@ -455,6 +424,95 @@ class Edit_Users_State extends State<Edit_Users> {
                         ),
                         onPressed: () {
                           if (_Form_Validation_Key.currentState.validate()){
+                            String Temp_Gender = User_Gender;
+                            print("Delete Button Pressed");
+                            print(User_Category);
+                            Current_Document_ID = null;
+                            if (_Form_Validation_Key.currentState.validate()){
+                              User_Category = "None";
+                              Future.wait([
+                                Search_Student(User_Email.text),
+                                Search_Admin(User_Email.text),
+                              ]).then((List <dynamic> future_value) {
+                                if (User_Category == "Student") {
+                                  FirebaseFirestore.instance.collection("tblstudents").doc(Current_Document_ID).delete().then((delete_data){});
+                                  return showDialog(context: context, builder: (context){
+                                    User_ID.text = "";
+                                    User_FName.text = "";
+                                    User_LName.text = "";
+                                    User_Type.text = "";
+                                    User_Mobile.text = "";
+                                    User_Course_ID.text = "";
+                                    return AlertDialog(
+                                      title: Text("Record Deleted"),
+                                      actions: [
+                                        RaisedButton(
+                                          onPressed: (){
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("Ok"),
+                                        )
+                                      ],
+                                    );
+                                  });
+
+                                }
+                                else if (User_Category == "Admin") {
+                                  print(User_Category);
+                                  FirebaseFirestore.instance.collection("tbladmins").doc(Current_Document_ID).delete().then((delete_data){});
+                                  return showDialog(context: context, builder: (context){
+                                    User_ID.text = "";
+                                    User_FName.text = "";
+                                    User_LName.text = "";
+                                    User_Type.text = "";
+                                    User_Mobile.text = "";
+                                    User_Course_ID.text = "";
+                                    return AlertDialog(
+                                      title: Text("Record Deleted"),
+                                      actions: [
+                                        RaisedButton(
+                                          onPressed: (){
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("Ok"),
+                                        )
+                                      ],
+                                    );
+                                  });
+
+                                }
+
+                                else if (User_Category == "None") {
+                                  User_Gender = "";
+                                  Gender_State.currentState.didChange(User_Gender);
+                                  return showDialog(context: context, builder: (context) {
+                                    User_ID.text = "";
+                                    User_FName.text = "";
+                                    User_LName.text = "";
+                                    User_Type.text = "";
+                                    User_Mobile.text = "";
+                                    User_Course_ID.text = "";
+
+
+                                    return AlertDialog(
+                                      title: Text("Unable to find such user"),
+                                      actions: [
+                                        RaisedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text("Ok"),
+                                        )
+                                      ],
+                                    );
+                                  });
+                                }
+
+                              });
+
+                            }else{
+                              print("Validation error");
+                            }
 
                           }else{
                             print("Validation error");
