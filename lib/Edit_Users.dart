@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'Global_Variables.dart' as globals;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:test1/User_Login_Service.dart';
 
 class Edit_Users extends StatefulWidget {
   @override
@@ -13,6 +16,7 @@ class Edit_Users extends StatefulWidget {
 class Edit_Users_State extends State<Edit_Users> {
 
   final CollectionReference firestore_students_collection = FirebaseFirestore.instance.collection('tblstudents');
+  final CollectionReference firestore_admins_collection = FirebaseFirestore.instance.collection('tbladmins');
   TextEditingController User_Email= TextEditingController();
   TextEditingController User_ID= TextEditingController();
   TextEditingController User_FName = TextEditingController();
@@ -30,29 +34,87 @@ class Edit_Users_State extends State<Edit_Users> {
   String Current_User_LName;
   String Current_User_Mobile;
   String Current_User_Course_ID;
+  String User_Category = "None";
 
 
   Search_Button(){
+    User_Category = "None";
     Future.wait([
-      Search_New_User(User_Email.text),
-    ]).then((List <dynamic> future_value){
-      if (Current_Document_ID != null){
+      Search_Student(User_Email.text),
+      Search_Admin(User_Email.text),
+    ]).then((List <dynamic> future_value) {
+      //setState((){
+      if (User_Category != "None") {
         User_ID.text = Current_User_ID;
         User_FName.text = Current_User_FName;
         User_LName.text = Current_User_LName;
         Gender_State.currentState.didChange(User_Gender);
         User_Mobile.text = Current_User_Mobile;
         User_Course_ID.text = Current_User_Course_ID;
-
-      }else{
-        return showDialog(context: context, builder: (context){
+        User_Type.text = User_Category;
+        print("SB" + User_Category);
+        if (User_Category == "Student"){
+          User_Course_ID.text = Current_User_Course_ID;
+        }else{
+          User_Course_ID.text = "";
+        }
+      } else {
+        User_Gender = "";
+        Gender_State.currentState.didChange(User_Gender);
+        return showDialog(context: context, builder: (context) {
           User_ID.text = "";
           User_FName.text = "";
           User_LName.text = "";
+          User_Type.text = "";
+          User_Mobile.text = "";
+          User_Course_ID.text = "";
 
 
           return AlertDialog(
             title: Text("Unable to find such user"),
+            actions: [
+              RaisedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Ok"),
+              )
+            ],
+          );
+        });
+      }
+    //});
+
+    });
+  }
+
+  Update_Button(){
+    print("Update Function");
+
+
+    /*if (User_Category == "Student"){
+      FirebaseFirestore.instance.collection('tblstudents').doc(Current_Document_ID).update(
+          {
+            "student_email" : User_Email.text,
+            "student_id" : User_ID.text,
+            "student_fname" : User_FName.text,
+            "student_lname" : User_LName.text,
+            "student_gender" : User_Gender,
+            "student_mobile" : User_Mobile.text,
+            "course_id" : User_Course_ID.text,
+          }).then((values){
+        Current_Document_ID = null;
+        return showDialog(context: context, builder: (context){
+          User_Email.text = "";
+          User_ID.text = "";
+          User_FName.text = "";
+          User_LName.text = "";
+          User_Gender = "";
+          User_Mobile.text = "";
+          User_Course_ID.text = "";
+
+          return AlertDialog(
+            title: Text("Record Updated"),
             actions: [
               RaisedButton(
                 onPressed: (){
@@ -63,25 +125,43 @@ class Edit_Users_State extends State<Edit_Users> {
             ],
           );
         });
+
       }
-    });
+      );
+    }*/
   }
 
-  Future <void> Search_New_User(String email) async{
 
+
+  Future <void> Search_Student(String email) async{
+    //Gender_State.currentState.didChange(User_Gender);
     await firestore_students_collection.where('student_email', isEqualTo: email).get().then((filtered_users){
-      Current_Document_ID = null;
+      //Current_Document_ID = null;
       filtered_users.docs.forEach((filtered_users_i) {
         Current_Document_ID = filtered_users_i.id;
-        Current_User_ID = filtered_users_i["student_id"];
+        Current_User_ID = filtered_users_i["student_id"].toString();
         Current_User_FName = filtered_users_i["student_fname"];
         Current_User_LName = filtered_users_i["student_lname"];
         User_Gender = filtered_users_i["student_gender"];
         Current_User_Mobile = filtered_users_i["student_mobile"].toString();
         Current_User_Course_ID = filtered_users_i["course_id"];
+        User_Category = "Student";
+        return;
+      });
+    });
+  }
 
-
-
+  Future <void> Search_Admin(String email) async{
+    await firestore_admins_collection.where('admin_email', isEqualTo: email).get().then((filtered_users){
+      //Current_Document_ID = null;
+      filtered_users.docs.forEach((filtered_users_i) {
+        Current_Document_ID = filtered_users_i.id;
+        Current_User_ID = filtered_users_i["admin_id"].toString();
+        Current_User_FName = filtered_users_i["admin_fname"];
+        Current_User_LName = filtered_users_i["admin_lname"];
+        User_Gender = filtered_users_i["admin_gender"];
+        Current_User_Mobile = filtered_users_i["admin_mobile"].toString();
+        User_Category = "Admin";
         return;
       });
     });
@@ -139,7 +219,10 @@ class Edit_Users_State extends State<Edit_Users> {
                         ),
                         onPressed: () {
                           if (_Form_Validation_Key.currentState.validate()){
+                            Gender_State.currentState.didChange(User_Gender);
                             Search_Button();
+                            print(User_Gender);
+                            Gender_State.currentState.didChange(User_Gender);
                           }else{
                             print("Validation error");
                           }
@@ -197,7 +280,6 @@ class Edit_Users_State extends State<Edit_Users> {
 
                     TextFormField(
                       controller: User_ID,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       decoration: InputDecoration(
                           labelText: "User ID",
                           fillColor: Colors.amber[400], filled: true
@@ -227,7 +309,7 @@ class Edit_Users_State extends State<Edit_Users> {
                     SizedBox(height: 10),
 
                     DropdownButtonFormField(
-                      items: <String>['Male', 'Female'].map<DropdownMenuItem<String>>((User_Gender){
+                      items: <String>['','Male', 'Female'].map<DropdownMenuItem<String>>((User_Gender){
                         return DropdownMenuItem<String>(
                           value: User_Gender,
                           child: Text(User_Gender),
@@ -284,7 +366,74 @@ class Edit_Users_State extends State<Edit_Users> {
                           borderRadius: BorderRadius.circular(9.0),
                         ),
                         onPressed: () {
+                          String Temp_Gender = User_Gender;
+                          print("Update Button Pressed");
+                          print(User_Category);
+                          Current_Document_ID = null;
                           if (_Form_Validation_Key.currentState.validate()){
+                            User_Category = "None";
+                            Future.wait([
+                              Search_Student(User_Email.text),
+                              Search_Admin(User_Email.text),
+                            ]).then((List <dynamic> future_value) {
+                              //setState((){
+                              if (User_Category == "Student") {
+                                print(User_Gender);
+
+                                FirebaseFirestore.instance.collection('tblstudents').doc(Current_Document_ID).update(
+                                {
+                                  "student_email" : User_Email.text,
+                                  "student_id" : User_ID.text,
+                                  "student_fname" : User_FName.text,
+                                  "student_lname" : User_LName.text,
+                                  "student_gender" : Temp_Gender,
+                                  "student_mobile" : User_Mobile.text,
+                                  "course_id" : User_Course_ID.text,
+                                });
+
+                              }
+                              if (User_Category == "Admin") {
+                                print(User_Category);
+
+                                FirebaseFirestore.instance.collection('tbladmins') .doc(Current_Document_ID).update(
+                                    {
+                                      "admin_email": User_Email.text,
+                                      "admin_id": User_ID.text,
+                                      "admin_fname": User_FName.text,
+                                      "admin_lname": User_LName.text,
+                                      "admin_gender": Temp_Gender,
+                                      "admin_mobile": User_Mobile.text,
+                                    });
+                              }
+
+                              if (User_Category == "None") {
+                                User_Gender = "";
+                                Gender_State.currentState.didChange(User_Gender);
+                                return showDialog(context: context, builder: (context) {
+                                  User_ID.text = "";
+                                  User_FName.text = "";
+                                  User_LName.text = "";
+                                  User_Type.text = "";
+                                  User_Mobile.text = "";
+                                  User_Course_ID.text = "";
+
+
+                                  return AlertDialog(
+                                    title: Text("Unable to find such user"),
+                                    actions: [
+                                      RaisedButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("Ok"),
+                                      )
+                                    ],
+                                  );
+                                });
+                              }
+                              //});
+
+                            });
 
                           }else{
                             print("Validation error");
